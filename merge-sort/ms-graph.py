@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 from random import sample
+from matplotlib import pyplot as plt
+from math import log
 
 # En esta variable se lleva el conteo de comparaciones
 compareCount = 0
@@ -49,27 +50,32 @@ def merge(list_1, list_2):
 # Datos para la gráfica
 compareGraph = {
     "x": [],
-    "y": []
+    "y": [],
+    "l": []
 }
 # Contador de iteraciones
 i = 1
+# Escala para generar listas
+listScale = input(">>> Ingrese la escala para las listas: ")
 
 while i <= 20:
     # Reinicicar el contador
     compareCount = 0
-    print(">>> Generando la lista aleotoria #{0} ...".format(i))
 
     # Definir el tamaño de la lista en base a el contador de iteración
-    # como: [contador]*1000
-    radomListLength = int(i*1e3)
-    randomList = sample(range(radomListLength * 2), k=radomListLength)
+    # como: [contador]*[escala]
+    radomListLength = int(listScale) * i
 
-    # Ordernar la lista aleatorio
+    print(">>> Generando la lista aleotoria #{0} de tamaño {1} ...".format(i, radomListLength))
+    randomList = sample(range(radomListLength * 2), radomListLength)
+
+    # Ordernar la lista aleatoria
     mergeSort(randomList)
 
-    # Guardar los datos: - x : Número de lista, - y : Número de comparaciones
+    # Guardar los datos: - x :Tamaño de la lista, - y : Número de comparaciones, -l : función x*log[2](x)
     compareGraph["y"].append(compareCount)
-    compareGraph["x"].append(i)
+    compareGraph["x"].append(radomListLength)
+    compareGraph["l"].append(radomListLength * log(radomListLength, 2))
 
     i += 1
 
@@ -77,11 +83,13 @@ while i <= 20:
 # Implementación de la gráfica
 
 # -- alimentar los datos
-plt.plot(compareGraph["x"], compareGraph["y"])
+plt.plot(compareGraph["x"], compareGraph["y"], label="n * C(n)")
+plt.plot(compareGraph["x"], compareGraph["l"], label="n * log[2](n)")
 
 # -- configurar los ejes y la grillas
-plt.xlabel("Número de lista")
+plt.xlabel("Tamaño de la lista")
 plt.ylabel("Comparaciones")
+plt.legend()
 plt.grid(True)
 
 # -- mostrar la gráfica
